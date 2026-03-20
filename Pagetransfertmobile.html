@@ -1,0 +1,101 @@
+
+    <!doctype html>
+    <html lang="fr">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>Envoyer des images</title>
+      <style>
+        body {
+          font-family: sans-serif;
+          padding: 20px;
+          max-width: 520px;
+          margin: 0 auto;
+        }
+        .box {
+          border: 2px dashed #999;
+          border-radius: 12px;
+          padding: 20px;
+          margin: 16px 0;
+        }
+        button {
+          font-size: 16px;
+          padding: 12px 16px;
+          border-radius: 10px;
+          border: none;
+        }
+        #status {
+          margin-top: 16px;
+          white-space: pre-line;
+        }
+      </style>
+    </head>
+    <body>
+      <h2>Envoyer des images vers Processing</h2>
+
+      <div class="box">
+        <input id="files" type="file" accept="image/*" multiple>
+      </div>
+
+      <button id="send">Téléverser</button>
+
+      <div id="status">Aucune image envoyée.</div>
+
+      <script>
+        const input = document.getElementById('files');
+        const sendBtn = document.getElementById('send');
+        const status = document.getElementById('status');
+
+        sendBtn.onclick = async () => {
+          const files = [...input.files];
+
+          if (!files.length) {
+            status.textContent = "Choisis au moins une image.";
+            return;
+          }
+
+          status.textContent = `Envoi de ${files.length} image(s)...`;
+
+          let ok = 0;
+          let fail = 0;
+
+          for (const file of files) {
+            try {
+              const name = encodeURIComponent(file.name);
+
+              const res = await fetch(`/upload?name=${name}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': file.type || 'application/octet-stream'
+                },
+                body: file
+              });
+
+              if (!res.ok) {
+                fail++;
+                continue;
+              }
+
+              ok++;
+            } catch (e) {
+              fail++;
+            }
+          }
+
+          status.textContent =
+            `Terminé.\\nRéussies : ${ok}\\nÉchecs : ${fail}`;
+
+          input.value = "";
+        };
+      </script>
+    </body>
+    </html>
+    """;
+
+  byte[] response = html.getBytes("UTF-8");
+  exchange.getResponseHeaders().set("Content-Type", "text/html; charset=utf-8");
+  exchange.sendResponseHeaders(200, response.length);
+  OutputStream os = exchange.getResponseBody();
+  os.write(response);
+  os.close();
+});
