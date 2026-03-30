@@ -15,11 +15,6 @@ const config = {
 	},
 	kit: {
 		adapter: adapter()
-	},
-	vite: {
-		server: {
-			allowedHosts: ['memoridef.projets.erasme.org']
-		}
 	}
 };
 
