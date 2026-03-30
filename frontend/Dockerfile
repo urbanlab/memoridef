@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 5173
 
-CMD ["npx", "vite", "dev", "--host", "0.0.0.0", "--allowed-hosts", "all"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
