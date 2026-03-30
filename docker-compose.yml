@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./backend
-    image: erasme/memoridef-back:dev
+    image: erasme/memoridef-back:test
     ports:
       - "8001:8000"
     volumes:
@@ -14,7 +14,7 @@ services:
 
   frontend:
     build: ./frontend
-    image: erasme/memoridef-front:dev
+    image: erasme/memoridef-front:test
     ports:
       - "5173:80"
     depends_on:
