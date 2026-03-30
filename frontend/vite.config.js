@@ -3,9 +3,20 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [
+		tailwindcss(),
+		sveltekit(),
+		{
+			name: 'bypass-host-check',
+			configureServer(server) {
+				server.middlewares.use((req, res, next) => {
+					req.headers.host = 'localhost';
+					next();
+				});
+			}
+		}
+	],
 	server: {
-		allowedHosts: ['memoridef.projets.erasme.org'],
 		proxy: {
 			'/api': {
 				target: 'http://backend:8000',
