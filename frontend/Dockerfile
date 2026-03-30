@@ -1,12 +1,11 @@
-FROM node:lts
+FROM node:lts-alpine AS dev
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY . /app
 
-COPY . .
+RUN npm install
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+ENTRYPOINT [ "npm", "run", "dev"]
