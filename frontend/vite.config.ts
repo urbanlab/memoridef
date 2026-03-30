@@ -16,6 +16,6 @@ const config = defineConfig({
 
 export default mergeConfig(config, {
 	server: {
-		allowedHosts: true
+		allowedHosts: ['memoridef.projets.erasme.org']
 	}
 });
