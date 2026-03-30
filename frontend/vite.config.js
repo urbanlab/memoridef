@@ -7,12 +7,14 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit(),
 		{
-			name: 'bypass-host-check',
+			name: 'remove-host-check',
 			configureServer(server) {
-				server.middlewares.use((req, res, next) => {
-					req.headers.host = 'localhost';
-					next();
-				});
+				// Remove Vite's built-in host validation middleware from the stack
+				const stack = server.middlewares.stack;
+				const idx = stack.findIndex(
+					(layer) => layer.handle && layer.handle.name === 'hostValidationMiddleware'
+				);
+				if (idx !== -1) stack.splice(idx, 1);
 			}
 		}
 	],
