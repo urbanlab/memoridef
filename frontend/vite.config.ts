@@ -1,21 +1,17 @@
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig, mergeConfig } from 'vite';
+import { defineConfig } from 'vite';
 
-const config = defineConfig({
+export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	server: {
+		host: true,
+		allowedHosts: ['memoridef.projets.erasme.org'],
 		proxy: {
 			'/api': {
 				target: 'http://backend:8000',
 				changeOrigin: true
 			}
 		}
-	}
-});
-
-export default mergeConfig(config, {
-	server: {
-		allowedHosts: ['memoridef.projets.erasme.org']
 	}
 });
