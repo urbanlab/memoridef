@@ -14,12 +14,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    environment:
-      - PUBLIC_API_URL=http://localhost:8000
+      - "5173:80"
     depends_on:
       - backend
 
