@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+@theme {
+	--color-accent: #000140;
+	--color-accent-light: #F5FFFF;
+	--color-light: #FFFFFF;
+	--color-dark: #1C1C1C;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+	font-family: system-ui, -apple-system, sans-serif;
+	background: var(--color-light);
+	color: var(--color-dark);
+}

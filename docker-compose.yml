@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./backend:/app
+      - uploads:/app/uploads
+      - db_data:/app/data
+    environment:
+      - UPLOAD_DIR=/app/uploads
+      - DB_PATH=/app/data/memoridef.db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  uploads:
+  db_data:
