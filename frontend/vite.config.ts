@@ -5,8 +5,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	server: {
-		host: true,
-		allowedHosts: true,
+		allowedHosts: ['memoridef.projets.erasme.org'],
 		proxy: {
 			'/api': {
 				target: 'http://backend:8000',
