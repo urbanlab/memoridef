@@ -22,7 +22,7 @@
 	let filteredPlacedImages = $derived.by(() => {
 		return appState.placedImages.filter((img) => {
 			if (!img.date) return false;
-			return img.date <= appState.selectedDate;
+			return img.date === appState.selectedDate;
 		});
 	});
 
@@ -77,23 +77,23 @@
 </script>
 
 <div
-	class="flex h-dvh w-dvw flex-col overflow-hidden bg-dark"
+	class="flex h-dvh w-dvw overflow-hidden bg-white"
 	class:select-none={appState.drag?.active}
 	class:cursor-grabbing={appState.drag?.active}
 >
-	<!-- Main area: map + timeline -->
-	<div class="flex min-h-0 flex-1">
+	<!-- Left: map + carousel -->
+	<div class="flex min-w-0 flex-1 flex-col">
 		<!-- Map -->
-		<div class="min-w-0 flex-1 bg-accent-light">
+		<div class="min-h-0 flex-1 bg-white p-4">
 			<MapView bind:this={mapView} images={filteredPlacedImages} />
 		</div>
 
-		<!-- Timeline scroller (right) -->
-		<TimelineScroller availableDates={appState.availableDates} />
+		<!-- Image carousel (bottom) -->
+		<ImageCarousel images={appState.carouselImages} />
 	</div>
 
-	<!-- Image carousel (bottom) -->
-	<ImageCarousel images={appState.carouselImages} />
+	<!-- Timeline scroller (right, full height) -->
+	<TimelineScroller availableDates={appState.availableDates} />
 </div>
 
 <!-- Floating drag ghost follows pointer -->

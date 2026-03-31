@@ -156,7 +156,7 @@
 
 <div
 	bind:this={mapContainer}
-	class="relative h-full w-full overflow-hidden"
+	class="relative h-full w-full overflow-hidden rounded-lg border border-accent/30"
 	onclick={() => {
 		if (!wasDragging()) expandedClusterId = null;
 	}}
@@ -164,7 +164,7 @@
 	aria-label="Carte"
 >
 	<!-- Map background -->
-	<img src="/map.png" alt="Carte" class="h-full w-full object-contain" draggable="false" />
+	<img src="/map2.png" alt="Carte" class="h-full w-full object-contain" draggable="false" />
 
 	<!-- Drop zone highlight when actively dragging -->
 	{#if appState.drag?.active}

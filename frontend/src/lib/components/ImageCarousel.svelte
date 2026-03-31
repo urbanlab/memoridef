@@ -16,20 +16,20 @@
 	}
 </script>
 
-<div class="relative w-full overflow-hidden bg-dark/90 px-4 py-4" style="min-height: 120px;">
-	<div class="flex items-center justify-center gap-0" style="min-height: 100px;">
+<div class="relative w-full overflow-hidden bg-white px-6 py-6" style="min-height: 180px;">
+	<div class="flex items-center justify-start gap-0" style="min-height: 150px;">
 		{#each images as img, i (img.id)}
 			{@const rot = seededRotation(img.id)}
 			{@const off = seededOffset(img.id)}
 			{@const isDragging = appState.drag?.active && appState.drag?.image.id === img.id}
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
-				class="photo-card relative -ml-8 first:ml-0 flex-shrink-0 cursor-grab transition-all hover:scale-110"
+				class="photo-card relative -ml-12 first:ml-0 flex-shrink-0 cursor-grab transition-all hover:scale-110"
 				class:opacity-30={isDragging}
 				class:scale-95={isDragging}
 				style="
 					transform: rotate({rot}deg) translate({off.x}px, {off.y}px);
-					z-index: {isDragging ? 0 : i};
+					z-index: {isDragging ? 0 : images.length - i};
 					touch-action: none;
 				"
 				onpointerdown={(e) => beginDrag(e, img, 'carousel')}
@@ -37,13 +37,13 @@
 				aria-label={img.author}
 			>
 				<div
-					class="overflow-hidden rounded-sm bg-white p-1 shadow-lg"
+					class="overflow-hidden rounded-sm bg-white p-1.5 shadow-lg"
 					style="box-shadow: 0 2px 12px rgba(0,0,0,0.35);"
 				>
 					<img
 						src={imageUrl(img.path)}
 						alt={img.author}
-						class="h-20 w-28 object-cover"
+						class="h-32 w-44 object-cover"
 						draggable="false"
 					/>
 				</div>

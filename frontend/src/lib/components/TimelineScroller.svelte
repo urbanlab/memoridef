@@ -60,6 +60,19 @@
 		return false;
 	}
 
+	// Find the first available date in a tick range and jump to it
+	function jumpToTickDate(dayOffsetStart: number, dayOffsetEnd: number) {
+		const lo = Math.min(dayOffsetStart, dayOffsetEnd);
+		const hi = Math.max(dayOffsetStart, dayOffsetEnd);
+		for (let d = lo; d <= hi; d++) {
+			const date = dayOffsetDate(d);
+			if (availableDateSet.has(date)) {
+				appState.selectedDate = date;
+				return;
+			}
+		}
+	}
+
 	// Current selected date has a photo?
 	let currentDayHasPhoto = $derived(availableDateSet.has(appState.selectedDate));
 
@@ -119,23 +132,23 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="flex h-full w-28 flex-col bg-white/60 select-none"
+	class="flex h-full w-56 flex-col select-none border-l border-accent"
 	onwheel={handleWheel}
 	onpointerdown={onPointerDown}
 	onpointermove={onPointerMove}
 	onpointerup={onPointerUp}
-	style="touch-action: none; cursor: ns-resize;"
+	style="touch-action: none; cursor: ns-resize; background-color: #F5FFFF;"
 >
 	<!-- TOP: next year -->
 	<button
-		class="shrink-0 w-full pr-3 pt-3 pb-1 text-right text-xs text-dark/30 hover:text-dark/50 transition-colors"
+		class="shrink-0 w-full pr-5 pt-3 pb-1 text-right text-sm text-dark/30 hover:text-dark/50 transition-colors"
 		onclick={() => setYear(topYear)}
 	>
 		{topYear}
 	</button>
 
 	<!-- Upper ticks: future days (top = farthest, bottom = closest to center) -->
-	<div class="flex flex-1 flex-col justify-end overflow-hidden pr-3">
+	<div class="flex flex-1 flex-col justify-end overflow-hidden pr-5">
 		{#each Array(TICK_COUNT) as _, i}
 			{@const tickIndex = TICK_COUNT - i}
 			{@const dayStart = (tickIndex - 1) * daysPerTick + 1}
@@ -143,31 +156,36 @@
 			{@const hasPhoto = tickRangeHasPhoto(dayStart, dayEnd)}
 			{@const offset = yearProgress * (100 / (TICK_COUNT + 1))}
 			<div
-				class="flex w-full items-center justify-end gap-1.5"
+				class="relative flex w-full items-center justify-end"
 				style="flex: 1; transform: translateY({offset}%);"
 			>
+				<div class="h-px w-5 bg-dark/12"></div>
 				{#if hasPhoto}
-					<div class="h-1.5 w-3 rounded-[1px] bg-accent/45"></div>
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div
+						class="absolute right-0 h-4 w-4 rounded-full bg-accent cursor-pointer hover:bg-accent/70 transition-colors"
+						onpointerdown={(e) => e.stopPropagation()}
+						onclick={(e) => { e.stopPropagation(); jumpToTickDate(dayStart, dayEnd); }}
+					></div>
 				{/if}
-				<div class="h-px w-3 bg-dark/12"></div>
 			</div>
 		{/each}
 	</div>
 
 	<!-- CENTER: selected date + year -->
-	<div class="flex w-full items-center justify-end px-2 py-2 shrink-0">
+	<div class="flex w-full items-center justify-end px-4 py-3 shrink-0">
 		{#if currentDayHasPhoto}
-			<div class="h-2 w-3.5 rounded-[1px] bg-accent/60 mr-1.5"></div>
+			<div class="h-5 w-5 rounded-full bg-accent mr-2"></div>
 		{/if}
 		<div class="flex flex-col items-end">
-			<span class="text-[10px] leading-tight text-accent/70">{displayDate}</span>
-			<span class="text-3xl font-black leading-none text-accent">{selectedYear}</span>
+			<span class="text-sm leading-tight text-accent/70">{displayDate}</span>
+			<span class="text-5xl font-black leading-none text-accent">{selectedYear}</span>
 		</div>
-		<span class="ml-1 text-lg text-accent">&#9664;</span>
+		<span class="ml-2 text-2xl text-accent">&#9664;</span>
 	</div>
 
 	<!-- Lower ticks: past days (top = closest to center, bottom = farthest) -->
-	<div class="flex flex-1 flex-col overflow-hidden pr-3">
+	<div class="flex flex-1 flex-col overflow-hidden pr-5">
 		{#each Array(TICK_COUNT) as _, i}
 			{@const tickIndex = i + 1}
 			{@const dayStart = -((tickIndex - 1) * daysPerTick + 1)}
@@ -175,20 +193,25 @@
 			{@const hasPhoto = tickRangeHasPhoto(dayStart, dayEnd)}
 			{@const offset = yearProgress * (100 / (TICK_COUNT + 1))}
 			<div
-				class="flex w-full items-center justify-end gap-1.5"
+				class="relative flex w-full items-center justify-end"
 				style="flex: 1; transform: translateY(-{offset}%);"
 			>
+				<div class="h-px w-5 bg-dark/12"></div>
 				{#if hasPhoto}
-					<div class="h-1.5 w-3 rounded-[1px] bg-accent/45"></div>
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div
+						class="absolute right-0 h-4 w-4 rounded-full bg-accent cursor-pointer hover:bg-accent/70 transition-colors"
+						onpointerdown={(e) => e.stopPropagation()}
+						onclick={(e) => { e.stopPropagation(); jumpToTickDate(dayStart, dayEnd); }}
+					></div>
 				{/if}
-				<div class="h-px w-3 bg-dark/12"></div>
 			</div>
 		{/each}
 	</div>
 
 	<!-- BOTTOM: previous year -->
 	<button
-		class="shrink-0 w-full pr-3 pt-1 pb-3 text-right text-xs text-dark/30 hover:text-dark/50 transition-colors"
+		class="shrink-0 w-full pr-5 pt-1 pb-3 text-right text-sm text-dark/30 hover:text-dark/50 transition-colors"
 		onclick={() => setYear(bottomYear)}
 	>
 		{bottomYear}
