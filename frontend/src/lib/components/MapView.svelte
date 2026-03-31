@@ -2,10 +2,12 @@
 	import { imageUrl, updateImage, type ImageData } from '$lib/api';
 	import { appState, beginDrag, wasDragging } from '$lib/stores.svelte';
 	import ImageModal from './ImageModal.svelte';
+	import InkDropShader from './InkDropShader.svelte';
 
 	let { images }: { images: ImageData[] } = $props();
 
 	let mapContainer = $state<HTMLDivElement>(undefined!);
+	let inkShader: InkDropShader;
 	let modalImage = $state<ImageData | null>(null);
 	let modalGallery = $state<ImageData[]>([]);
 	let expandedClusterId = $state<string | null>(null);
@@ -130,6 +132,8 @@
 		const coords = pageToMapCoords(clientX, clientY);
 		if (!coords) return;
 
+		inkShader?.addDrop(coords.x, coords.y);
+
 		const img = drag.image;
 
 		if (drag.source === 'carousel') {
@@ -157,7 +161,12 @@
 <div
 	bind:this={mapContainer}
 	class="relative h-full w-full overflow-hidden rounded-lg border border-accent/30"
-	onclick={() => {
+	onclick={(e) => {
+		if (e.ctrlKey) {
+			const coords = pageToMapCoords(e.clientX, e.clientY);
+			if (coords) inkShader?.addDrop(coords.x, coords.y);
+			return;
+		}
 		if (!wasDragging()) expandedClusterId = null;
 	}}
 	role="application"
@@ -165,6 +174,9 @@
 >
 	<!-- Map background -->
 	<img src="/map2.png" alt="Carte" class="h-full w-full object-contain" draggable="false" />
+
+	<!-- Ink drop shader overlay -->
+	<InkDropShader bind:this={inkShader} />
 
 	<!-- Drop zone highlight when actively dragging -->
 	{#if appState.drag?.active}
