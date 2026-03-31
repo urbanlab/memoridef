@@ -90,7 +90,7 @@
 	}
 </script>
 
-<div class="flex min-h-dvh flex-col items-center bg-accent-light px-4 pt-8 pb-8">
+<div class="flex h-dvh flex-col items-center overflow-y-auto bg-accent-light px-4 pt-8 pb-8">
 	<!-- Title -->
 	<h1 class="mb-6 text-3xl font-black tracking-tight text-accent">MEMOR'IDEF</h1>
 

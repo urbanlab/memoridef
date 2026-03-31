@@ -9,6 +9,7 @@
 
 	let pollInterval: ReturnType<typeof setInterval>;
 	let mapView: MapView;
+	let timelineView: TimelineScroller;
 
 	async function loadData() {
 		const [unplaced, dates] = await Promise.all([
@@ -52,7 +53,11 @@
 			if (!drag) return;
 			if (drag.active) {
 				markDragEnd();
-				mapView?.handleDrop(e.clientX, e.clientY, drag);
+				if (timelineView?.isOver(e.clientX, e.clientY)) {
+					timelineView.handleDrop(drag.image, drag.source);
+				} else {
+					mapView?.handleDrop(e.clientX, e.clientY, drag);
+				}
 			}
 		}
 
@@ -93,7 +98,7 @@
 	</div>
 
 	<!-- Timeline scroller (right, full height) -->
-	<TimelineScroller availableDates={appState.availableDates} />
+	<TimelineScroller bind:this={timelineView} availableDates={appState.availableDates} />
 </div>
 
 <!-- Floating drag ghost follows pointer -->

@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { appState } from '$lib/stores.svelte';
+	import { deleteImage, type ImageData } from '$lib/api';
 
 	let { availableDates = [] }: { availableDates?: string[] } = $props();
+
+	let containerEl = $state<HTMLDivElement>(undefined!);
 
 	const MAX_YEAR = new Date().getFullYear();
 	const MIN_YEAR = 1990;
@@ -128,10 +131,27 @@
 	function onPointerUp() {
 		isDragging = false;
 	}
+
+	export function isOver(clientX: number, clientY: number): boolean {
+		if (!containerEl) return false;
+		const rect = containerEl.getBoundingClientRect();
+		return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+	}
+
+	export function handleDrop(image: ImageData, source: string) {
+		deleteImage(image.id).then(() => {
+			if (source === 'carousel') {
+				appState.carouselImages = appState.carouselImages.filter((i) => i.id !== image.id);
+			} else {
+				appState.placedImages = appState.placedImages.filter((i) => i.id !== image.id);
+			}
+		});
+	}
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
+	bind:this={containerEl}
 	class="flex h-full w-56 flex-col select-none border-l border-accent"
 	onwheel={handleWheel}
 	onpointerdown={onPointerDown}

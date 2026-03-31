@@ -51,9 +51,15 @@
 		{/each}
 
 		{#if images.length === 0}
-			<p class="w-full py-4 text-center text-sm text-white/40">
-				Aucune image — uploadez depuis votre téléphone !
-			</p>
+			<div class="flex w-full items-center justify-center py-2">
+				<div
+					class="rounded-2xl border-2 border-dashed border-accent/30 px-10 py-6 text-center"
+					style="transform: rotate(-3deg);"
+				>
+					<p class="text-base font-bold text-accent">Plus de photos à archiver</p>
+					<p class="text-sm text-accent/60">Recharger des photos pour continuer</p>
+				</div>
+			</div>
 		{/if}
 	</div>
 </div>
